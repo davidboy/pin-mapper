@@ -18,6 +18,15 @@
         <button type="submit">Add Student</button>
     </form>
 
+    <span style="float: right;">
+      <a href="?cluster=<%= @cluster ? 'n' : 'y' %>">
+        Clustering: <%= @cluster ? 'on' : 'off' %>
+      </a>
+      <a href="?satellite=<%= @satellite ? 'n' : 'y' %>">
+        Satellite: <%= @grouping ? 'on' : 'off' %>
+      </a>
+    </span>
+
     <div id="map"></div>
     <style type="text/css">
       #map { height: 100%; }
@@ -28,7 +37,7 @@
       // http://otile1.mqcdn.com/tiles/1.0.0/[map|sat]
       // http://otile1.mqcdn.com/tiles/1.0.0/map/8/126/87.jpg
       // /{z}/{x}/{y}.png
-      L.tileLayer('http://otile1.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.png', {
+      L.tileLayer("<%= @tile_layer %>", {
         attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
         maxZoom: 9
       }).addTo(map);
