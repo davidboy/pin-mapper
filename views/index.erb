@@ -37,48 +37,17 @@
         var markers = L.markerClusterGroup({ showCoverageOnHover: false, maxClusterRadius: 28 });
 
         <% @students.each do |student| %>
-          var marker = L.marker(new L.LatLng(<%=student[:gps_lat]%>,<%=student[:gps_lon]%>), { 'title': "<%= student[:name] %>" });
-          marker.bindPopup("<div><h3><%= student[:name] %></h3><p><%= student[:city] %> <i><a href=\"#\">edit</a></i></p></div>");
+          var marker = L.marker(new L.LatLng(<%=student.gps_lat%>,<%=student.gps_lon%>), { 'title': "<%= student.name %>" });
+          marker.bindPopup("<div><h3><%= student.name %></h3><p><%= student.city %> <i><a href=\"#\">edit</a></i></p></div>");
           markers.addLayer(marker);
         <% end %>
 
         map.addLayer(markers);
       <% else %>
         <% @students.each do |student| %>
-          L.marker([<%=student[:gps_lat]%>,<%=student[:gps_lon]%>]).addTo(map);
+          L.marker([<%=student.gps_lat%>,<%=student.gps_lon%>]).addTo(map);
         <% end %>
       <% end %>
     </script>
-
-    <!--<table>
-      <thead>
-        <tr><th>Name</th><th>City</th><th>lat</th><th>lon</th></tr>
-      </thead>
-      <tbody>
-        <% @students.each do |student| %>
-          <tr>
-            <td><%= student[:name] %></td>
-            <td><%= student[:city] %></td>
-            <td><%= student[:gps_lat] %></td>
-            <td><%= student[:gps_lon] %></td>
-          </tr>
-        <% end %>
-      </tbody>
-    </table>-->
-
-<!--     <form action="/students" method="post">
-      <div>
-        <label for="name">Name:</label>
-        <input type="text" id="name" name="name" />
-      </div>
-      <div>
-        <label for="city">City:</label>
-        <input type="text" id="city" name="city" />
-      </div>
-
-      <div>
-        <button type="submit">Add Student</button>
-      </div>
-    </form> -->
   </body>
 </html>
