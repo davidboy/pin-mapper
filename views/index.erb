@@ -51,7 +51,7 @@
         map.addLayer(markers);
       <% else %>
         <% @students.each do |student| %>
-          L.marker([<%=student.gps_lat%>,<%=student.gps_lon%>]).addTo(map);
+          L.marker([<%=student.gps_lat%>,<%=student.gps_lon%>]).bindPopup("<div><h3><%= student.name %></h3><p><%= student.city %> <i><a href=\"#\">edit</a></i></p></div>").addTo(map);
         <% end %>
       <% end %>
     </script>
