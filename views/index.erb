@@ -1,21 +1,3 @@
-
-<form action="/students" method="post">
-    <label for="name">Name:</label>
-    <input type="text" id="name" name="name" />
-    <label for="city">City:</label>
-    <input type="text" id="city" name="city" />
-    <button type="submit">Add Student</button>
-</form>
-
-<span style="float: right;">
-  <a href="?cluster=<%= @cluster ? 'n' : 'y' %>">
-    Clustering: <%= @cluster ? 'on' : 'off' %>
-  </a>
-  <a href="?satellite=<%= @satellite ? 'n' : 'y' %>">
-    Satellite: <%= @grouping ? 'on' : 'off' %>
-  </a>
-</span>
-
 <div id="map"></div>
 <style type="text/css">
   #map { height: 100%; }

@@ -1,0 +1,40 @@
+<div class="navbar navbar-inverse navbar-fixed-top">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand">Pin Mapper</a>
+    </div>
+
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+          <a href="?cluster=<%= @cluster ? 'n' : 'y' %>">
+            Clustering: <%= @cluster ? 'on' : 'off' %>
+          </a>
+        </li>
+        <li>
+          <a href="?satellite=<%= @satellite ? 'n' : 'y' %>">
+            Satellite: <%= @grouping ? 'on' : 'off' %>
+          </a>
+        </li>
+      </ul>
+
+      <form class="navbar-form navbar-right" action="/students" method="post">
+        <div class="form-group">
+          <!--<label for="name">Name:</label>-->
+          <input type="text" id="name" name="name" class="form-control" placeholder="Name" />
+        </div>
+        <div class="form-group">
+          <!--<label for="city">City:</label>-->
+          <input type="text" id="city" name="city" class="form-control" placeholder="City" />
+        </div>
+        <button type="submit" class="btn btn-default">Add Student</button>
+      </form>
+    </div>
+  </div>
+</div>
