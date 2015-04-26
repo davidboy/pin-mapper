@@ -12,17 +12,54 @@
 
   <% if @cluster %>
     var markers = L.markerClusterGroup({ showCoverageOnHover: false, maxClusterRadius: 28 });
-
-    <% @students.each do |student| %>
-      var marker = L.marker(new L.LatLng(<%=student.gps_lat%>,<%=student.gps_lon%>), { 'title': "<%= student.name %>" });
-      marker.bindPopup("<div><h3><%= student.name %></h3><p><%= student.city %> <i><a href=\"#\">edit</a></i></p></div>");
-      markers.addLayer(marker);
-    <% end %>
-
     map.addLayer(markers);
-  <% else %>
-    <% @students.each do |student| %>
-      L.marker([<%=student.gps_lat%>,<%=student.gps_lon%>]).bindPopup("<div><h3><%= student.name %></h3><p><%= student.city %> <i><a href=\"#\">edit</a></i></p></div>").addTo(map);
-    <% end %>
   <% end %>
+
+  var students = {};
+
+  <% @students.each do |student| %>
+    students[<%= student.id %>] = {
+      id: '<%= student.id %>',
+      name: '<%= student.name %>',
+      city: '<%= student.city %>',
+      lat: '<%= student.gps_lat %>',
+      lon: '<%= student.gps_lon %>'
+    };
+  <% end %>
+
+  Object.keys(students).forEach(function(student_id) {
+    var student = students[student_id];
+    var marker = L.marker(new L.LatLng(student.lat, student.lon), { 'title': student.name });
+    marker.bindPopup('<div><h3>'+student.name+'</h3><p>'+student.city+'<i><button data-toggle="modal" data-target="#edit-student" data-studentid="'+student.id+'">edit</button></i></p></div>');
+
+    if (<%= @cluster %>) {
+      markers.addLayer(marker);
+    } else {
+      marker.addTo(map);
+    }
+  });
+
+  $(function() {
+    $('#edit-student').on('show.bs.modal', function(event) {
+      var student_id = $(event.relatedTarget).data('studentid');
+      var student = students[student_id];
+
+      var modal = $(this);
+      modal.find('input#id').val(student.id);
+      modal.find('input#name').val(student.name);
+      modal.find('input#city').val(student.city);
+      modal.find("#edit-form").attr('action', '/students/'+student.id);
+      modal.find("#delete-form").attr('action', '/students/'+student.id);
+    });
+
+    $('#edit-student .modal-footer #edit-btn').click(function() {
+      $('#edit-student #edit-form').submit();
+    });
+
+    $('#edit-student .modal-footer #delete-btn').click(function() {
+      $("#edit-student #delete-form").submit();
+    });
+  });
 </script>
+
+<%= erb :edit_dialog %>

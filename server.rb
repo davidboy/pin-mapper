@@ -40,10 +40,26 @@ class StudentPinMap < Sinatra::Application
     erb :index
   end
 
-  # Adds a new student to the database
-  # @todo validate the inputs!
+  # @todo validation and error checking
   post '/students' do
     Student.create name: params[:name], city: params[:city]
+
+    redirect '/'
+  end
+
+  # @todo validation and error checking
+  put '/students/:id' do
+    Student[params[:id]].update({
+      name: params[:name],
+      city: params[:city]
+    })
+
+    redirect '/'
+  end
+
+  # @todo guess what? validation and error checking!
+  delete '/students/:id' do
+    Student[params[:id]].delete
 
     redirect '/'
   end
