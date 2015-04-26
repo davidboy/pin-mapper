@@ -6,7 +6,7 @@ def initialize_database(production)
   if production
     db = Sequel.connect ENV['DATABASE_URL']
   else
-    db = Sequel.sqlite 'data.db'
+    db = Sequel.connect 'sqlite://data.db'
   end
 
   begin

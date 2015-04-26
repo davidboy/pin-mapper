@@ -1,12 +1,10 @@
 require 'sinatra/base'
 
-require './models/database'
-initialize_database(production=false)
-
-require './models/student'
-
 class StudentPinMap < Sinatra::Application
-  set :bind, '0.0.0.0'
+  require './models/database'
+  initialize_database(settings.production?)
+
+  require './models/student'
 
   # Group together adjacent pins?  If multiple pins are in the same location
   #   #   and this setting is turned off, only the top pin will be shown.
