@@ -1,59 +1,46 @@
-<html>
-  <head>
-    <title>Maps!</title>
 
-    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
-    <link rel="stylesheet" href="/MarkerCluster.css" /> 
-    <link rel="stylesheet" href="/MarkerCluster.Default.css" /> 
+<form action="/students" method="post">
+    <label for="name">Name:</label>
+    <input type="text" id="name" name="name" />
+    <label for="city">City:</label>
+    <input type="text" id="city" name="city" />
+    <button type="submit">Add Student</button>
+</form>
 
-    <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
-    <script type="text/javascript" src="/leaflet.markercluster.js"></script>   
-  </head>
-  <body>
-    <form action="/students" method="post">
-        <label for="name">Name:</label>
-        <input type="text" id="name" name="name" />
-        <label for="city">City:</label>
-        <input type="text" id="city" name="city" />
-        <button type="submit">Add Student</button>
-    </form>
+<span style="float: right;">
+  <a href="?cluster=<%= @cluster ? 'n' : 'y' %>">
+    Clustering: <%= @cluster ? 'on' : 'off' %>
+  </a>
+  <a href="?satellite=<%= @satellite ? 'n' : 'y' %>">
+    Satellite: <%= @grouping ? 'on' : 'off' %>
+  </a>
+</span>
 
-    <span style="float: right;">
-      <a href="?cluster=<%= @cluster ? 'n' : 'y' %>">
-        Clustering: <%= @cluster ? 'on' : 'off' %>
-      </a>
-      <a href="?satellite=<%= @satellite ? 'n' : 'y' %>">
-        Satellite: <%= @grouping ? 'on' : 'off' %>
-      </a>
-    </span>
+<div id="map"></div>
+<style type="text/css">
+  #map { height: 100%; }
+</style>
 
-    <div id="map"></div>
-    <style type="text/css">
-      #map { height: 100%; }
-    </style>
-    
-    <script type="text/javascript">
-      var map = L.map('map', { minZoom: 4, maxZoom: 9, worldCopyJump: true }).setView([33.520, -86.802], 5);
-      L.tileLayer("<%= @tile_layer %>", {
-        attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, Tiles Courtesy of <a href="http://www.mapquest.com/" target="_blank">MapQuest</a> <img src="http://developer.mapquest.com/content/osm/mq_logo.png"><% if @satellite then %>, Portions Courtesy NASA/JPL-Caltech and U.S. Depart. of Agriculture, Farm Service Agency<% end %>',
-        maxZoom: 9
-      }).addTo(map);
+<script type="text/javascript">
+  var map = L.map('map', { minZoom: 4, maxZoom: 9, worldCopyJump: true }).setView([33.520, -86.802], 5);
+  L.tileLayer("<%= @tile_layer %>", {
+    attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, Tiles Courtesy of <a href="http://www.mapquest.com/" target="_blank">MapQuest</a> <img src="http://developer.mapquest.com/content/osm/mq_logo.png"><% if @satellite then %>, Portions Courtesy NASA/JPL-Caltech and U.S. Depart. of Agriculture, Farm Service Agency<% end %>',
+    maxZoom: 9
+  }).addTo(map);
 
-      <% if @cluster %>
-        var markers = L.markerClusterGroup({ showCoverageOnHover: false, maxClusterRadius: 28 });
+  <% if @cluster %>
+    var markers = L.markerClusterGroup({ showCoverageOnHover: false, maxClusterRadius: 28 });
 
-        <% @students.each do |student| %>
-          var marker = L.marker(new L.LatLng(<%=student.gps_lat%>,<%=student.gps_lon%>), { 'title': "<%= student.name %>" });
-          marker.bindPopup("<div><h3><%= student.name %></h3><p><%= student.city %> <i><a href=\"#\">edit</a></i></p></div>");
-          markers.addLayer(marker);
-        <% end %>
+    <% @students.each do |student| %>
+      var marker = L.marker(new L.LatLng(<%=student.gps_lat%>,<%=student.gps_lon%>), { 'title': "<%= student.name %>" });
+      marker.bindPopup("<div><h3><%= student.name %></h3><p><%= student.city %> <i><a href=\"#\">edit</a></i></p></div>");
+      markers.addLayer(marker);
+    <% end %>
 
-        map.addLayer(markers);
-      <% else %>
-        <% @students.each do |student| %>
-          L.marker([<%=student.gps_lat%>,<%=student.gps_lon%>]).bindPopup("<div><h3><%= student.name %></h3><p><%= student.city %> <i><a href=\"#\">edit</a></i></p></div>").addTo(map);
-        <% end %>
-      <% end %>
-    </script>
-  </body>
-</html>
+    map.addLayer(markers);
+  <% else %>
+    <% @students.each do |student| %>
+      L.marker([<%=student.gps_lat%>,<%=student.gps_lon%>]).bindPopup("<div><h3><%= student.name %></h3><p><%= student.city %> <i><a href=\"#\">edit</a></i></p></div>").addTo(map);
+    <% end %>
+  <% end %>
+</script>
