@@ -1,16 +1,6 @@
 require 'sequel'
 require 'json'
 
-DB = Sequel.sqlite 'data.db'
-
-# DB.create_table :students do
-#   primary_key :id
-#   String :name
-#   String :city
-#   Float :gps_lat  # N
-#   Float :gps_lon  # W
-# end
-
 class Student < Sequel::Model
   def before_save
     super
@@ -34,7 +24,7 @@ class Student < Sequel::Model
   def reverse_geocode(location)
     sanitized_location = URI.escape(location)
     api_uri = URI.parse("http://nominatim.openstreetmap.org/search/#{sanitized_location}?format=json")
-    
+
     city_data = JSON.parse(Net::HTTP.get(api_uri)).first
 
     latitude  = city_data['lat'].to_f

@@ -1,5 +1,8 @@
 require 'sinatra/base'
 
+require './models/database'
+initialize_database(production=false)
+
 require './models/student'
 
 class StudentPinMap < Sinatra::Application
