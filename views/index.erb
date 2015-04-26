@@ -30,7 +30,7 @@
   Object.keys(students).forEach(function(student_id) {
     var student = students[student_id];
     var marker = L.marker(new L.LatLng(student.lat, student.lon), { 'title': student.name });
-    marker.bindPopup('<div><h3>'+student.name+'</h3><p>'+student.city+'<i><button data-toggle="modal" data-target="#edit-student" data-studentid="'+student.id+'">edit</button></i></p></div>');
+    marker.bindPopup('<div><h3>'+student.name+'</h3><p>'+student.city+' (<i><a href="#" data-toggle="modal" data-target="#edit-student" data-studentid="'+student.id+'">edit</button></i>)</p></div>');
 
     if (<%= @cluster %>) {
       markers.addLayer(marker);
