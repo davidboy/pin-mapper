@@ -7,7 +7,7 @@ class StudentPinMap < Sinatra::Application
   require './models/student'
 
   # Group together adjacent pins?  If multiple pins are in the same location
-  #   #   and this setting is turned off, only the top pin will be shown.
+  #  and this setting is turned off, only the top pin will be shown.
   set cluster: true
 
   # Use satellite images for the map background?
