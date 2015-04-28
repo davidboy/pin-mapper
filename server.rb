@@ -2,16 +2,16 @@ require 'sinatra/base'
 require 'rack/csrf'
 
 class StudentPinMap < Sinatra::Application
-  enable :sessions
-
-  use Rack::Csrf, raise: true
-
-  helpers do
-    def h(text)
-      Rack::Utils.escape_html(text)
-    end
+  # Restrict access so random people on the internet won't delete the map
+  use Rack::Auth::Basic, "Restricted Area" do |username, password|
+    username == 'covenant' and password == ENV['ACCESS_PASSWORD']
   end
 
+  # We don't use sessions, but they are needed by the CSRF protection module
+  enable :sessions
+  use Rack::Csrf, raise: true
+
+  # Connect to the database and load the student model
   require './models/database'
   initialize_database(settings.production?)
   require './models/student'
@@ -20,17 +20,11 @@ class StudentPinMap < Sinatra::Application
   #  and this setting is turned off, only the top pin will be shown.
   set cluster: true
 
-  # Use satellite images for the map background?
-  set satellite: false
-
-  # To change the above settings, the user clicks a link which sets a URI
-  #   parameter (eg. "/?cluster=n").  This before hook checks for those and
-  #   updates the setting accordingly.
+  # To change the cluster setting, the user clicks a link which sets a URI
+  #   parameter.  So we check for that and change the setting accordingly.
   before do
-    for setting in [:cluster, :satellite]
-      if params[setting]
-        StudentPinMap.set(setting, params[setting] == 'y')
-      end
+    if params[:cluster]
+      StudentPinMap.set(:cluster, params[:cluster] == 'y')
     end
   end
 
@@ -46,6 +40,7 @@ class StudentPinMap < Sinatra::Application
     erb :index
   end
 
+  # Adds a new student to the database
   # @todo validation and error checking
   post '/students' do
     new_student = Student.create name: params[:name], city: params[:city]
@@ -53,6 +48,7 @@ class StudentPinMap < Sinatra::Application
     redirect "/?zoom_to=#{new_student.id}"
   end
 
+  # Changes the name and/or location of a student
   # @todo validation and error checking
   put '/students/:id' do
     Student[params[:id]].update({
@@ -63,6 +59,7 @@ class StudentPinMap < Sinatra::Application
     redirect '/'
   end
 
+  # Removes a student from the map
   # @todo guess what? validation and error checking!
   delete '/students/:id' do
     Student[params[:id]].delete
@@ -70,6 +67,9 @@ class StudentPinMap < Sinatra::Application
     redirect '/'
   end
 
-  # TODO: add config.ru to run with rackup
-  run!
+  helpers do
+    def h(text)
+      Rack::Utils.escape_html(text)
+    end
+  end
 end
