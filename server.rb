@@ -6,6 +6,12 @@ class StudentPinMap < Sinatra::Application
 
   require './models/student'
 
+  helpers do
+    def h(text)
+      Rack::Utils.escape_html(text)
+    end
+  end
+
   # Group together adjacent pins?  If multiple pins are in the same location
   #  and this setting is turned off, only the top pin will be shown.
   set cluster: true

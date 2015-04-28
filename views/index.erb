@@ -19,11 +19,11 @@
 
   <% @students.each do |student| %>
     students[<%= student.id %>] = {
-      id: '<%= student.id %>',
-      name: '<%= student.name %>',
-      city: '<%= student.city %>',
-      lat: '<%= student.gps_lat %>',
-      lon: '<%= student.gps_lon %>'
+      id:   '<%=h student.id %>',
+      name: '<%=h student.name %>',
+      city: '<%=h student.city %>',
+      lat:  '<%=h student.gps_lat %>',
+      lon:  '<%=h student.gps_lon %>'
     };
   <% end %>
 
