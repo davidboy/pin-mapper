@@ -4,19 +4,14 @@
 </style>
 
 <script type="text/javascript">
-  var map = L.map('map', { minZoom: 4, maxZoom: 9, worldCopyJump: true }).setView([33.520, -86.802], 5);
-  L.tileLayer("http://otile1.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.png", {
-    attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, Tiles Courtesy of <a href="http://www.mapquest.com/" target="_blank">MapQuest</a> <img src="http://developer.mapquest.com/content/osm/mq_logo.png"><% if @satellite then %>, Portions Courtesy NASA/JPL-Caltech and U.S. Depart. of Agriculture, Farm Service Agency<% end %>',
-    maxZoom: 9
-  }).addTo(map);
+  var tiles = L.tileLayer("http://otile1.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.png", {
+    maxZoom: 9,
+    attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, Tiles Courtesy of <a href="http://www.mapquest.com/" target="_blank">MapQuest</a> <img src="http://developer.mapquest.com/content/osm/mq_logo.png"><% if @satellite then %>, Portions Courtesy NASA/JPL-Caltech and U.S. Depart. of Agriculture, Farm Service Agency<% end %>'
+  });
 
-  <% if @cluster %>
-    var markers = L.markerClusterGroup({ showCoverageOnHover: false, maxClusterRadius: 28 });
-    map.addLayer(markers);
-  <% end %>
+  var map = L.map('map', { layers: [tiles], minZoom: 4, maxZoom: 9, worldCopyJump: true });
 
   var students = {};
-
   <% @students.each do |student| %>
     students[<%= student.id %>] = {
       id:   '<%=h student.id %>',
@@ -27,17 +22,37 @@
     };
   <% end %>
 
+  <% if @cluster %>
+    var markerLayer = L.markerClusterGroup({ showCoverageOnHover: false, maxClusterRadius: 28 });
+    map.addLayer(markerLayer);
+  <% end %>
+
+  var markers = {};
   Object.keys(students).forEach(function(student_id) {
     var student = students[student_id];
-    var marker = L.marker(new L.LatLng(student.lat, student.lon), { 'title': student.name });
+
+    var marker = L.marker([student.lat, student.lon]);
     marker.bindPopup('<div><h3>'+student.name+'</h3><p>'+student.city+' (<i><a href="#" data-toggle="modal" data-target="#edit-student" data-studentid="'+student.id+'">edit</button></i>)</p></div>');
 
     if (<%= @cluster %>) {
-      markers.addLayer(marker);
+      markerLayer.addLayer(marker);
     } else {
       marker.addTo(map);
     }
+
+    markers[student.id] = marker;
   });
+
+  <% if @zoom_to %>
+    // TODO: handle invalid student ids
+    var marker = markers[<%= @zoom_to.to_i %>];
+
+    map.setView(marker.getLatLng(), 8);
+    marker.openPopup();
+  <% else %>
+    map.setView([33.520, -86.802], 5);
+  <% end %>
+
 
   $(function() {
     $('#edit-student').on('show.bs.modal', function(event) {

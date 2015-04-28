@@ -39,14 +39,18 @@ class StudentPinMap < Sinatra::Application
     @cluster  = settings.cluster
     @students = Student.all
 
+    if params[:zoom_to]
+      @zoom_to = params[:zoom_to]
+    end
+
     erb :index
   end
 
   # @todo validation and error checking
   post '/students' do
-    Student.create name: params[:name], city: params[:city]
+    new_student = Student.create name: params[:name], city: params[:city]
 
-    redirect '/'
+    redirect "/?zoom_to=#{new_student.id}"
   end
 
   # @todo validation and error checking
