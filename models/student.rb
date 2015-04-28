@@ -6,7 +6,7 @@ class Student < Sequel::Model
   def before_save
     super
 
-    latitude, longitude = reverse_geocode self.city
+    latitude, longitude = geocode self.city
 
     self.gps_lat = latitude
     self.gps_lon = longitude
@@ -22,7 +22,7 @@ class Student < Sequel::Model
   #
   # @todo Handle errors gracefully (malformed data, api being down, etc.)
   # @todo Blindly using the first coordinates found might be a bad idea?
-  def reverse_geocode(location)
+  def geocode(location)
     sanitized_location = URI.escape(location)
     api_uri = URI.parse("http://nominatim.openstreetmap.org/search/#{sanitized_location}?format=json")
 
