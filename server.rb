@@ -36,16 +36,8 @@ class StudentPinMap < Sinatra::Application
 
   # The main page.  Currently displays the map and a form to add another student
   get '/' do
+    @cluster  = settings.cluster
     @students = Student.all
-
-    @cluster   = settings.cluster
-    @satellite = settings.satellite
-
-    if @satellite
-      @tile_layer = "http://otile1.mqcdn.com/tiles/1.0.0/sat/{z}/{x}/{y}.png"
-    else
-     @tile_layer = "http://otile1.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.png"
-   end
 
     erb :index
   end
