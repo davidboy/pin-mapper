@@ -1,16 +1,20 @@
 require 'sinatra/base'
+require 'rack/csrf'
 
 class StudentPinMap < Sinatra::Application
-  require './models/database'
-  initialize_database(settings.production?)
+  enable :sessions
 
-  require './models/student'
+  use Rack::Csrf, raise: true
 
   helpers do
     def h(text)
       Rack::Utils.escape_html(text)
     end
   end
+
+  require './models/database'
+  initialize_database(settings.production?)
+  require './models/student'
 
   # Group together adjacent pins?  If multiple pins are in the same location
   #  and this setting is turned off, only the top pin will be shown.

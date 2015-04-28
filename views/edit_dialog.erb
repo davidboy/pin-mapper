@@ -3,8 +3,9 @@
     <div class="modal-content">
       <div class="modal-body">
         <form action="/students" method="post" id="edit-form">
-          <input type="hidden" id="id" name="id" />
+          <%= Rack::Csrf.csrf_tag(env) %>
           <input type="hidden" name="_method" value="put">
+
           <div class="form-group">
             <label for="name" class="control-label">Name:</label>
             <input type="text" id="name" name="name" class="form-control" placeholder="Name" />
@@ -15,6 +16,7 @@
           </div>
         </form>
         <form action="/students" method="post" id="delete-form">
+          <%= Rack::Csrf.csrf_tag(env) %>
           <input type="hidden" name="_method" value="delete">
         </form>
       </div>
